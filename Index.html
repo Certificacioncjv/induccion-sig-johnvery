@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inducción y Reinducción SIG · Cosméticos Johnvery SAS</title>
+<style>
+  :root{
+    --verde:#7ab51d; --verde-osc:#5f9016; --verde-cl:#eef7e0;
+    --gris:#3d4a45; --gris-cl:#6b7770; --linea:#e2e8e0;
+    --bg:#f4f7f2; --blanco:#ffffff; --rojo:#d64545; --amar:#e8a23d;
+    --sombra:0 2px 14px rgba(40,60,40,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,-apple-system,Arial,sans-serif;color:var(--gris);background:var(--bg);line-height:1.6;font-size:16px}
+  .oculto{display:none!important}
+  .app{max-width:960px;margin:0 auto;padding:0 16px 60px}
+
+  /* Encabezado */
+  header{background:linear-gradient(120deg,var(--verde-osc),var(--verde));color:#fff;padding:22px 0;margin-bottom:22px;box-shadow:var(--sombra)}
+  .head-in{max-width:960px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .logo{width:52px;height:52px;border-radius:12px;background:#fff;color:var(--verde-osc);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;letter-spacing:-1px}
+  .head-tit h1{font-size:19px;font-weight:700;line-height:1.2}
+  .head-tit p{font-size:13px;opacity:.9}
+  .head-user{margin-left:auto;text-align:right;font-size:13px;opacity:.95}
+
+  /* Barra de progreso */
+  .barra-wrap{background:var(--blanco);border-radius:12px;padding:14px 18px;box-shadow:var(--sombra);margin-bottom:20px}
+  .barra-top{display:flex;justify-content:space-between;font-size:13px;color:var(--gris-cl);margin-bottom:8px}
+  .barra{height:9px;background:var(--verde-cl);border-radius:20px;overflow:hidden}
+  .barra i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--verde),var(--verde-osc));transition:width .4s ease}
+
+  .card{background:var(--blanco);border-radius:16px;box-shadow:var(--sombra);padding:30px;margin-bottom:20px}
+  h2{color:var(--verde-osc);font-size:23px;margin-bottom:6px}
+  h3{color:var(--gris);font-size:17px;margin:20px 0 8px}
+  .sub{color:var(--gris-cl);font-size:14px;margin-bottom:18px}
+  p{margin-bottom:12px}
+  ul,ol{margin:0 0 14px 22px}
+  li{margin-bottom:7px}
+  .destacado{background:var(--verde-cl);border-left:4px solid var(--verde);border-radius:8px;padding:14px 16px;margin:16px 0}
+  .alerta{background:#fdf3e7;border-left:4px solid var(--amar);border-radius:8px;padding:14px 16px;margin:16px 0}
+  .peligro{background:#fbeaea;border-left:4px solid var(--rojo);border-radius:8px;padding:14px 16px;margin:16px 0}
+  .cita{font-style:italic;background:#f7faf3;border:1px dashed var(--verde);border-radius:8px;padding:14px 16px;color:#4a5a45}
+  .chip{display:inline-block;background:var(--verde-cl);color:var(--verde-osc);border-radius:20px;padding:3px 12px;font-size:12.5px;font-weight:600;margin:2px 3px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:14px 0}
+  .mini{border:1px solid var(--linea);border-radius:12px;padding:14px}
+  .mini b{color:var(--verde-osc)}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{border:1px solid var(--linea);padding:8px 10px;text-align:left}
+  th{background:var(--verde-cl);color:var(--verde-osc)}
+  .norma{font-size:13px;color:var(--gris-cl);border-top:1px solid var(--linea);margin-top:18px;padding-top:12px}
+
+  /* Botones */
+  .btns{display:flex;justify-content:space-between;gap:12px;margin-top:26px;flex-wrap:wrap}
+  button{font-family:inherit;font-size:15px;font-weight:600;border:none;border-radius:10px;padding:12px 22px;cursor:pointer;transition:.15s}
+  .b-prim{background:var(--verde);color:#fff}
+  .b-prim:hover{background:var(--verde-osc)}
+  .b-prim:disabled{background:#c3ccc0;cursor:not-allowed}
+  .b-sec{background:#eef1ec;color:var(--gris)}
+  .b-sec:hover{background:#e2e7df}
+
+  /* Formulario */
+  label{display:block;font-weight:600;font-size:14px;margin:14px 0 5px}
+  input,select{width:100%;font-family:inherit;font-size:15px;padding:11px 13px;border:1.5px solid var(--linea);border-radius:10px;background:#fff}
+  input:focus,select:focus{outline:none;border-color:var(--verde)}
+  .form-nota{font-size:13px;color:var(--gris-cl);margin-top:4px}
+
+  /* Índice módulos */
+  .idx{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+  .idx-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border:1px solid var(--linea);border-radius:10px;cursor:pointer;transition:.15s}
+  .idx-item:hover{border-color:var(--verde);background:#fafcf7}
+  .idx-item.done{background:#f3f9ea;border-color:var(--verde)}
+  .idx-num{width:30px;height:30px;border-radius:50%;background:var(--verde-cl);color:var(--verde-osc);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+  .idx-item.done .idx-num{background:var(--verde);color:#fff}
+  .idx-t{flex:1;font-weight:600;font-size:14.5px}
+  .idx-check{color:var(--verde);font-weight:700}
+
+  /* Evaluación */
+  .preg{margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--linea)}
+  .preg-q{font-weight:600;margin-bottom:10px}
+  .opt{display:block;padding:11px 14px;border:1.5px solid var(--linea);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.12s}
+  .opt:hover{border-color:var(--verde);background:#fafcf7}
+  .opt input{width:auto;margin-right:10px}
+  .opt.sel{border-color:var(--verde);background:var(--verde-cl)}
+  .opt.ok{border-color:var(--verde);background:#eaf7d9}
+  .opt.bad{border-color:var(--rojo);background:#fbeaea}
+  .feed{font-size:13.5px;margin-top:6px;padding:8px 12px;border-radius:8px}
+  .feed.ok{background:#eaf7d9;color:var(--verde-osc)}
+  .feed.bad{background:#fbeaea;color:var(--rojo)}
+
+  /* Resultado */
+  .res-score{text-align:center;padding:20px}
+  .res-num{font-size:52px;font-weight:800}
+  .res-num.pass{color:var(--verde)}
+  .res-num.fail{color:var(--rojo)}
+  .badge{display:inline-block;padding:8px 20px;border-radius:30px;font-weight:700;margin-top:8px}
+  .badge.pass{background:var(--verde-cl);color:var(--verde-osc)}
+  .badge.fail{background:#fbeaea;color:var(--rojo)}
+
+  /* Constancia */
+  .const{border:3px solid var(--verde);border-radius:14px;padding:34px;background:#fff;position:relative}
+  .const .c-logo{width:60px;height:60px;border-radius:14px;background:var(--verde);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:23px;margin:0 auto 10px}
+  .const h2{text-align:center;color:var(--verde-osc);border:none}
+  .const .c-emp{text-align:center;font-weight:700;letter-spacing:1px;color:var(--gris)}
+  .const .c-body{margin:22px 0;text-align:center;font-size:16px;line-height:1.9}
+  .const .c-name{font-size:24px;font-weight:800;color:var(--gris)}
+  .const .c-data{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin:20px auto;max-width:520px;text-align:left;font-size:14.5px}
+  .const .c-data div{border-bottom:1px solid var(--linea);padding:6px 0}
+  .const .c-data b{color:var(--verde-osc);display:block;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+  .const .c-firma{margin-top:34px;display:flex;justify-content:space-around;gap:30px;flex-wrap:wrap}
+  .const .c-firma div{text-align:center;border-top:1.5px solid var(--gris);padding-top:6px;min-width:210px;font-size:13.5px}
+  .const .c-folio{text-align:center;font-size:12px;color:var(--gris-cl);margin-top:24px}
+  .marca{position:absolute;top:12px;right:16px;font-size:11px;color:#c9d3c2;transform:rotate(6deg);font-weight:700}
+
+  footer{text-align:center;color:var(--gris-cl);font-size:12.5px;padding:20px}
+  @media(max-width:600px){.card{padding:20px}.const{padding:20px}.const .c-data{grid-template-columns:1fr}}
+
+  /* Impresión: solo la constancia */
+  @media print{
+    body{background:#fff}
+    header,.barra-wrap,.btns,footer,#print-hide{display:none!important}
+    .app{max-width:100%;padding:0}
+    .card{box-shadow:none;padding:0;margin:0}
+    .const{border:3px solid var(--verde)}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="head-in">
+    <div class="logo">CJ</div>
+    <div class="head-tit">
+      <h1>Inducción y Reinducción · Sistema Integrado de Gestión</h1>
+      <p>Cosméticos Johnvery SAS · ISO 9001 · ISO 14001 · ISO 45001</p>
+    </div>
+    <div class="head-user" id="headUser"></div>
+  </div>
+</header>
+
+<div class="app">
+
+  <div class="barra-wrap" id="barraWrap" style="display:none">
+    <div class="barra-top"><span id="barraTxt">Progreso</span><span id="barraPct">0%</span></div>
+    <div class="barra"><i id="barraFill"></i></div>
+  </div>
+
+  <!-- PANTALLA: BIENVENIDA / REGISTRO -->
+  <div class="card" id="scr-welcome">
+    <h2>Bienvenido(a) al proceso de Inducción y Reinducción</h2>
+    <p class="sub">Sistema Integrado de Gestión — Cosméticos Johnvery SAS</p>
+    <p>Este curso es <b>autónomo y asincrónico</b>: podrás avanzar a tu ritmo por cada módulo, responder una evaluación final y descargar tu <b>constancia</b>. No necesitas conexión a internet ni acompañamiento. Todo el contenido está basado en los documentos oficiales del SIG de la empresa.</p>
+    <div class="destacado">Antes de comenzar, registra tus datos. Aparecerán en tu constancia, así que escríbelos correctamente (tal como en tu documento de identidad).</div>
+
+    <label for="f-nombre">Nombre completo *</label>
+    <input id="f-nombre" placeholder="Nombres y apellidos" autocomplete="off">
+
+    <label for="f-cedula">Número de cédula *</label>
+    <input id="f-cedula" placeholder="Ej: 1.032.386.738" inputmode="numeric" autocomplete="off">
+
+    <label for="f-cargo">Cargo *</label>
+    <input id="f-cargo" placeholder="Ej: Operario de producción" autocomplete="off">
+
+    <label for="f-area">Área / tipo de personal *</label>
+    <select id="f-area">
+      <option value="">Selecciona tu área…</option>
+      <option value="Administrativo">Administrativo</option>
+      <option value="Comercial">Comercial</option>
+      <option value="Produccion">Producción / Planta</option>
+    </select>
+    <p class="form-nota">El personal de <b>Producción / Planta</b> verá módulos adicionales sobre productos químicos (listado y matriz de compatibilidad).</p>
+
+    <label for="f-tipo">Tipo de proceso *</label>
+    <select id="f-tipo">
+      <option value="Inducción">Inducción (ingreso nuevo)</option>
+      <option value="Reinducción">Reinducción (actualización)</option>
+    </select>
+
+    <div class="btns">
+      <span></span>
+      <button class="b-prim" id="btnStart">Comenzar &rarr;</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA: ÍNDICE -->
+  <div class="card oculto" id="scr-index">
+    <h2>Contenido del curso</h2>
+    <p class="sub">Debes revisar todos los módulos para habilitar la evaluación. Marca con ✓ cada uno que completes.</p>
+    <div class="idx" id="idxList"></div>
+    <div class="btns">
+      <span></span>
+      <button class="b-prim" id="btnGoEval" disabled>Ir a la evaluación &rarr;</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA: MÓDULO -->
+  <div class="card oculto" id="scr-module">
+    <div id="moduleBody"></div>
+    <div class="btns">
+      <button class="b-sec" id="btnPrev">&larr; Anterior</button>
+      <button class="b-prim" id="btnNext">Marcar leído y continuar &rarr;</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA: EVALUACIÓN -->
+  <div class="card oculto" id="scr-eval">
+    <h2>Evaluación final</h2>
+    <p class="sub">Responde todas las preguntas. Necesitas <b id="evalUmbral">80%</b> para aprobar. Si no apruebas, podrás repetirla.</p>
+    <div id="evalBody"></div>
+    <div class="btns">
+      <button class="b-sec" id="btnBackIdx">&larr; Volver al contenido</button>
+      <button class="b-prim" id="btnGrade">Calificar evaluación</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA: RESULTADO -->
+  <div class="card oculto" id="scr-result">
+    <div class="res-score">
+      <div class="res-num" id="resNum">0%</div>
+      <div class="badge" id="resBadge"></div>
+      <p id="resMsg" style="margin-top:16px"></p>
+    </div>
+    <div id="resReview"></div>
+    <div class="btns">
+      <button class="b-sec" id="btnRetry">Repetir evaluación</button>
+      <button class="b-prim" id="btnCert" style="display:none">Ver mi constancia &rarr;</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA: CONSTANCIA -->
+  <div class="card oculto" id="scr-cert">
+    <div class="const" id="certBox">
+      <div class="marca">Documento generado digitalmente</div>
+      <div class="c-logo">CJ</div>
+      <div class="c-emp">COSMÉTICOS JOHNVERY SAS · NIT 900.136.121-2</div>
+      <h2>Constancia de Inducción / Reinducción</h2>
+      <p style="text-align:center;color:var(--gris-cl)">Sistema Integrado de Gestión (ISO 9001:2015 · ISO 14001:2015 · ISO 45001:2018)</p>
+      <div class="c-body">
+        Se deja constancia de que<br>
+        <span class="c-name" id="certName">—</span><br>
+        identificado(a) con cédula de ciudadanía <b id="certCedula">—</b>,<br>
+        culminó satisfactoriamente el proceso de <b id="certTipo">—</b> en el
+        Sistema Integrado de Gestión de Cosméticos Johnvery SAS.
+      </div>
+      <div class="c-data">
+        <div><b>Cargo</b><span id="certCargo">—</span></div>
+        <div><b>Área / personal</b><span id="certArea">—</span></div>
+        <div><b>Módulos completados</b><span id="certMods">—</span></div>
+        <div><b>Resultado evaluación</b><span id="certScore">—</span></div>
+        <div><b>Fecha</b><span id="certFecha">—</span></div>
+        <div><b>Ciudad</b><span>Sincelejo, Sucre</span></div>
+      </div>
+      <div class="c-firma">
+        <div id="certFirmaTrab">Firma del trabajador</div>
+        <div>Dirección SIG<br>Cosméticos Johnvery SAS</div>
+      </div>
+      <div class="c-folio">Folio: <span id="certFolio">—</span> · Generado el <span id="certGen">—</span></div>
+    </div>
+    <div class="btns" id="certBtns">
+      <button class="b-sec" id="btnBackResult">&larr; Volver</button>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="b-prim" id="btnPrint">Imprimir / Guardar PDF</button>
+        <button class="b-prim" id="btnDownload">Descargar constancia (archivo)</button>
+      </div>
+    </div>
+    <div class="destacado" id="print-hide" style="margin-top:20px">
+      <b>¿Cómo entregar tu constancia?</b> Usa <b>“Imprimir / Guardar PDF”</b> y en destino elige “Guardar como PDF”, o usa <b>“Descargar constancia (archivo)”</b>. Luego envía el archivo a tu líder o al área de Gestión Integral / SST.
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Cosméticos Johnvery SAS · Dirección del Sistema Integrado de Gestión · Documento de formación interna — Copia controlada
+</footer>
+
+<script>
+/* ============================ CONTENIDO ============================ */
+/* areas: 'todos' = aplica a Administrativo, Comercial y Producción.
+   'prod' = solo Producción/Planta (según matriz de inducción). */
+
+const MISION = "En COSMÉTICOS JOHNVERY S.A.S, diseñamos, fabricamos y comercializamos productos cosméticos y de cuidado personal. Innovamos continuamente a través de nuestra experiencia, conocimiento, compromiso y capacidad del talento humano. Estamos comprometidos en cumplir con excelencia los requisitos legales y del sistema integrado de gestión que nos rigen, logrando así, la satisfacción de necesidades y expectativas de nuestros clientes y partes interesadas.";
+const VISION = "COSMÉTICOS JOHNVERY S.A.S será reconocida y valorada por la calidad e innovación de sus productos y servicios, en Colombia y Latinoamérica, superando la satisfacción de sus clientes y consumidores, y siendo un ejemplo de responsabilidad social para la región.";
+
+const MODULES = [
+{
+id:"intro", area:"todos", icon:"🎯",
+title:"Módulo 1 · ¿Qué es el Sistema Integrado de Gestión?",
+html:`
+<h2>¿Qué es el Sistema Integrado de Gestión (SIG)?</h2>
+<p class="sub">Punto de partida · aplica a todo el personal</p>
+<p><b>Cosméticos Johnvery SAS</b> es una empresa del sector cosmético dedicada al <b>diseño, fabricación y comercialización de productos cosméticos y de cuidado personal</b>, ubicada en Sincelejo (Sucre). Para trabajar con calidad, cuidando a las personas y al medio ambiente, la empresa cuenta con un <b>Sistema Integrado de Gestión (SIG)</b>.</p>
+<p>El SIG une en un solo sistema tres normas internacionales:</p>
+<div class="grid">
+  <div class="mini"><b>ISO 9001:2015</b><br>Gestión de la <b>Calidad</b>. Que el producto cumpla y el cliente quede satisfecho.</div>
+  <div class="mini"><b>ISO 14001:2015</b><br>Gestión <b>Ambiental</b>. Cuidar el entorno y reducir impactos.</div>
+  <div class="mini"><b>ISO 45001:2018</b><br>Gestión de <b>Seguridad y Salud en el Trabajo</b>. Cuidar tu vida y tu salud.</div>
+</div>
+<div class="destacado">El SIG funciona bajo el ciclo <b>PHVA</b>: <b>P</b>lanear, <b>H</b>acer, <b>V</b>erificar y <b>A</b>ctuar. Es la lógica de mejora continua que aplica a todo lo que hacemos.</div>
+<p>Tú eres parte fundamental del SIG: con tus acciones diarias ayudas a que el producto salga bien, a prevenir accidentes y a cuidar el ambiente.</p>
+<div class="norma">Marco: ISO 9001:2015, ISO 14001:2015, ISO 45001:2018 · Decreto 1072 de 2015 · Resolución 0312 de 2019.</div>
+`
+},
+{
+id:"estrategico", area:"todos", icon:"🧭",
+title:"Módulo 2 · Direccionamiento estratégico",
+html:`
+<h2>Direccionamiento estratégico</h2>
+<p class="sub">Misión, visión, valores, alcance y mapa de procesos</p>
+<h3>Misión</h3>
+<div class="cita">${MISION}</div>
+<h3>Visión</h3>
+<div class="cita">${VISION}</div>
+<h3>Nuestros valores</h3>
+<div class="grid">
+  <div class="mini"><b>Honestidad</b><br>Actuar con verdad y transparencia.</div>
+  <div class="mini"><b>Respeto</b><br>Trato digno y equitativo a todas las personas.</div>
+  <div class="mini"><b>Compromiso</b><br>Profesionalismo, responsabilidad y lealtad.</div>
+  <div class="mini"><b>Solidaridad</b><br>Apoyo y colaboración con el otro.</div>
+</div>
+<h3>Alcance del SIG</h3>
+<p>El Sistema Integrado de Gestión aplica al <b>diseño, fabricación y comercialización de productos cosméticos y de cuidado personal</b> de Cosméticos Johnvery SAS.</p>
+<h3>Mapa de procesos</h3>
+<p>La empresa organiza su trabajo en tres tipos de procesos que se articulan entre sí:</p>
+<table>
+<tr><th>Tipo</th><th>Función</th></tr>
+<tr><td><b>Estratégicos</b></td><td>Direccionan la organización: gerencia, planeación y gestión del SIG.</td></tr>
+<tr><td><b>Misionales</b></td><td>Generan el producto/servicio: diseño, producción, control de calidad, comercial.</td></tr>
+<tr><td><b>De apoyo</b></td><td>Soportan la operación: talento humano, compras, mantenimiento, gestión integral.</td></tr>
+</table>
+<div class="alerta">Consulta el <b>mapa de procesos oficial (GM-PR-01-AX4)</b> publicado en tu área para ver el detalle de los procesos de Johnvery.</div>
+<div class="norma">Documentos: GM-PR-01-AX1 Misión · AX2 Visión · AX3 Alcance · AX4 Mapa de procesos.</div>
+`
+},
+{
+id:"politica", area:"todos", icon:"📜",
+title:"Módulo 3 · Política y objetivos del SIG",
+html:`
+<h2>Política y objetivos del SIG</h2>
+<p class="sub">El compromiso de la empresa y hacia dónde vamos</p>
+<h3>Política del Sistema Integrado de Gestión</h3>
+<p>Cosméticos Johnvery, en su proceso de diseño, fabricación y comercialización de productos cosméticos y de cuidado personal, se compromete a <b>establecer, implementar y mejorar continuamente</b> el SIG (ISO 9001:2015, ISO 45001:2018 e ISO 14001:2015), sobre estos <b>7 pilares</b>:</p>
+<ol>
+  <li>Compromiso con la <b>calidad e innovación</b> de nuestros productos.</li>
+  <li>Cumplimiento de los <b>requisitos legales</b>, del SIG y otros.</li>
+  <li>Satisfacción de necesidades y expectativas de nuestras <b>partes interesadas</b>.</li>
+  <li>Gestión de los <b>aspectos ambientales</b> para minimizar impactos con prácticas amigables con el medio ambiente.</li>
+  <li><b>Identificación de peligros</b>, valoración y control de riesgos para prevenir lesiones y enfermedades.</li>
+  <li><b>Capacitación continua</b> a los colaboradores.</li>
+  <li>Facilitar espacios de <b>participación y consulta</b> de los colaboradores.</li>
+</ol>
+<h3>Objetivos del SIG</h3>
+<ul>
+  <li>Mantener altos estándares de calidad en procesos y productos.</li>
+  <li>Asegurar el crecimiento y una posición competitiva en el mercado.</li>
+  <li>Incrementar la satisfacción de las partes interesadas.</li>
+  <li>Mejorar continuamente la eficiencia y eficacia del SIG.</li>
+  <li>Asegurar la identificación, valoración e intervención de los riesgos laborales.</li>
+  <li>Disminuir los impactos ambientales de la organización.</li>
+  <li>Cumplir los requisitos legales aplicables.</li>
+  <li>Administrar eficientemente los recursos económicos, humanos y naturales.</li>
+</ul>
+<div class="norma">Documentos: GM-PR-01-AX6 Política del SIG · GM-PR-01-AX7 Objetivos del SIG.</div>
+`
+},
+{
+id:"roles", area:"todos", icon:"👤",
+title:"Módulo 4 · Roles y responsabilidades (tú en el SIG)",
+html:`
+<h2>Roles y responsabilidades</h2>
+<p class="sub">Lo que se espera de cada trabajador en el SGC y el SG-SST</p>
+<p>Todos, sin importar el cargo o tipo de contrato, tenemos responsabilidades dentro del SIG.</p>
+<h3>En Seguridad y Salud en el Trabajo (SG-SST) debes:</h3>
+<ul>
+  <li>Cumplir las normas, reglamentos e instrucciones del SG-SST.</li>
+  <li>Usar y cuidar correctamente los <b>elementos de protección personal (EPP)</b>.</li>
+  <li>Informar oportunamente los <b>peligros y riesgos</b> de tu sitio de trabajo.</li>
+  <li>Reportar de inmediato accidentes e incidentes a tu jefe y al responsable del SG-SST.</li>
+  <li>Cumplir con los exámenes médicos ocupacionales programados.</li>
+  <li>Participar en capacitaciones y en la identificación de peligros y valoración de riesgos.</li>
+  <li>Procurar el cuidado integral de tu salud y mantener orden y aseo en tu puesto.</li>
+</ul>
+<h3>En el Sistema de Gestión de Calidad (SGC) debes:</h3>
+<ul>
+  <li>Apoyar la implementación y mantenimiento de los sistemas de gestión.</li>
+  <li>Cumplir lo establecido en los procedimientos y proponer mejoras.</li>
+  <li>Dar cumplimiento a las políticas del SIG.</li>
+  <li>Reportar <b>salidas no conformes</b> (producto o trabajo que no cumple) y tomar acciones.</li>
+  <li>Asegurar la disponibilidad de los registros de tu proceso.</li>
+</ul>
+<div class="destacado">Regla de oro: <b>ante cualquier peligro, incidente o no conformidad, repórtalo. Reportar no es un problema, es prevención.</b></div>
+<div class="norma">Documentos: D-SIG-08 Roles y Responsabilidades SG-SST · D-SGI-17 Roles y Responsabilidades SGC.</div>
+`
+},
+{
+id:"partes", area:"todos", icon:"🤝",
+title:"Módulo 5 · Partes interesadas",
+html:`
+<h2>Partes interesadas</h2>
+<p class="sub">Quiénes influyen o se ven afectados por lo que hacemos</p>
+<p>Una <b>parte interesada</b> es cualquier persona u organización que puede afectar, verse afectada o percibirse como afectada por las actividades de la empresa. El SIG identifica sus necesidades y expectativas para responderles.</p>
+<div class="grid">
+  <div class="mini"><b>Clientes y consumidores</b><br>Esperan productos seguros, de calidad y a tiempo.</div>
+  <div class="mini"><b>Colaboradores</b><br>Esperan condiciones seguras, salud y bienestar.</div>
+  <div class="mini"><b>Proveedores y contratistas</b><br>Relaciones claras y cumplimiento mutuo.</div>
+  <div class="mini"><b>Autoridades</b><br>INVIMA, Ministerio de Trabajo, autoridad ambiental, ARL: cumplimiento legal.</div>
+  <div class="mini"><b>Comunidad y medio ambiente</b><br>Operación responsable, sin afectar el entorno.</div>
+  <div class="mini"><b>Accionistas / dirección</b><br>Sostenibilidad y crecimiento de la empresa.</div>
+</div>
+<div class="alerta">Tu trabajo bien hecho impacta directamente a estas partes: un producto conforme satisface al cliente y cumple ante el INVIMA; un puesto seguro te protege a ti y a tus compañeros.</div>
+<div class="norma">Documento: GM-PR-01-F4 Análisis de partes interesadas.</div>
+`
+},
+{
+id:"comites", area:"todos", icon:"🏛️",
+title:"Módulo 6 · Comités institucionales",
+html:`
+<h2>Comités institucionales</h2>
+<p class="sub">Espacios de participación en los que puedes intervenir</p>
+<table>
+<tr><th>Comité</th><th>Para qué sirve</th></tr>
+<tr><td><b>COPASST</b><br>Comité Paritario de Seguridad y Salud en el Trabajo</td><td>Vigila y promueve el SG-SST. Participa en inspecciones e investigación de accidentes. Conformado por representantes del empleador y de los trabajadores.</td></tr>
+<tr><td><b>Comité de Convivencia Laboral (CCL)</b></td><td>Previene y atiende situaciones de <b>acoso laboral</b> y conflictos de convivencia, con confidencialidad e imparcialidad.</td></tr>
+<tr><td><b>Brigada de Emergencia</b></td><td>Personal entrenado para actuar ante emergencias: evacuación, primeros auxilios y control de conatos de incendio.</td></tr>
+</table>
+<div class="destacado">Puedes participar activamente en estos comités y en las actividades que realicen. Conócelos y sabe a quién acudir.</div>
+<div class="norma">Marco: Resolución 0312 de 2019 (COPASST) · Resolución 3461 de 2025 (Comité de Convivencia Laboral) · Ley 1010 de 2006 (acoso laboral).</div>
+`
+},
+{
+id:"peligros", area:"todos", icon:"⚠️",
+title:"Módulo 7 · Peligros, riesgos y control",
+html:`
+<h2>Peligros y riesgos (Matriz IPVR)</h2>
+<p class="sub">Identificar el peligro es el primer paso para prevenir</p>
+<p><b>Peligro:</b> fuente con potencial de causar daño (una sustancia química, una máquina, un piso mojado). <b>Riesgo:</b> probabilidad de que ese daño ocurra. La empresa los identifica y valora en la <b>Matriz de Identificación de Peligros, Valoración de Riesgos y Determinación de Controles (IPVR)</b>, siguiendo la GTC 45.</p>
+<h3>Jerarquía de controles (en este orden)</h3>
+<ol>
+  <li><b>Eliminación</b> del peligro.</li>
+  <li><b>Sustitución</b> por algo menos peligroso.</li>
+  <li><b>Controles de ingeniería</b> (guardas, ventilación, aislamiento).</li>
+  <li><b>Controles administrativos</b> (procedimientos, señalización, capacitación, rotación).</li>
+  <li><b>Elementos de Protección Personal (EPP)</b> — la <b>última</b> línea de defensa.</li>
+</ol>
+<div class="peligro"><b>Importante:</b> el EPP no elimina el peligro, solo te protege cuando los demás controles no son suficientes. Por eso su uso es obligatorio, pero nunca reemplaza a los controles anteriores.</div>
+<p>Conoce los peligros de <b>tu</b> puesto de trabajo, aplica los controles y reporta cualquier condición insegura.</p>
+<div class="norma">Documento: GI-PR-13-F2 Matriz de IPVR · Metodología GTC 45.</div>
+`
+},
+{
+id:"reglamento", area:"todos", icon:"📋",
+title:"Módulo 8 · Reglamento de Higiene y Seguridad Industrial",
+html:`
+<h2>Reglamento de Higiene y Seguridad Industrial</h2>
+<p class="sub">Compromiso de la empresa con tu seguridad</p>
+<p>Cosméticos Johnvery SAS (ARL SURA, nivel de riesgo <b>III</b>) se compromete a prevenir accidentes de trabajo y enfermedades laborales. El reglamento contempla:</p>
+<ul>
+  <li><b>Gestión de peligros y riesgos:</b> identificar, evaluar y controlar riesgos para proteger a trabajadores, contratistas y visitantes.</li>
+  <li><b>Medicina preventiva y del trabajo:</b> promover el bienestar físico, mental y social.</li>
+  <li><b>Higiene y seguridad industrial:</b> condiciones de saneamiento y procedimientos para eliminar o controlar peligros.</li>
+  <li><b>Compromiso de todos:</b> cumplir el SG-SST en la promoción y prevención de la salud laboral.</li>
+</ul>
+<p>La empresa garantiza el funcionamiento del <b>COPASST</b> y destina los recursos necesarios para el SG-SST.</p>
+<div class="norma">Documento: D-SIG-09 Reglamento de Higiene y Seguridad Industrial · Ley 9 de 1979 · Resolución 2400 de 1979 · Decreto 1072 de 2015 · Resolución 0312 de 2019.</div>
+`
+},
+{
+id:"politicas-sst", area:"todos", icon:"🛡️",
+title:"Módulo 9 · Políticas de convivencia y seguridad",
+html:`
+<h2>Políticas que debes conocer y cumplir</h2>
+<p class="sub">De obligatorio cumplimiento para todo el personal</p>
+<h3>1. Prevención de consumo de alcohol, tabaco y sustancias psicoactivas (D-SIG-04)</h3>
+<ul>
+  <li>Prohibido consumir alcohol o SPA <b>durante la jornada</b> y en las instalaciones.</li>
+  <li>Prohibido ingresar en estado de embriaguez o bajo efectos de SPA.</li>
+  <li>Todos los espacios son <b>libres de humo</b> (no se permite fumar en las instalaciones).</li>
+  <li>La empresa puede realizar pruebas de alcoholimetría y detección de SPA.</li>
+</ul>
+<h3>2. Uso de Elementos de Protección Personal — EPP (D-SIG-05)</h3>
+<ul>
+  <li>Usar y conservar correctamente los EPP requeridos para tu labor.</li>
+  <li>No iniciar actividades sin los EPP necesarios.</li>
+  <li>Reportar oportunamente EPP dañado o ausente.</li>
+</ul>
+<h3>3. Convivencia laboral (D-SIG-03)</h3>
+<ul>
+  <li>Ambiente respetuoso, libre de acoso, violencia, discriminación o maltrato.</li>
+  <li>Canales confidenciales para reportar ante el <b>Comité de Convivencia Laboral</b>, con no represalia.</li>
+</ul>
+<h3>4. Inclusión, diversidad y enfoque de género (D-SIG-02)</h3>
+<ul>
+  <li><b>Cero tolerancia</b> a la discriminación y al acoso por identidad u orientación.</li>
+  <li>Trato digno y respeto a la diversidad en todo el ciclo laboral.</li>
+</ul>
+<div class="peligro">El incumplimiento de estas políticas puede dar lugar a medidas disciplinarias según el Reglamento Interno de Trabajo.</div>
+<div class="norma">Documentos: D-SIG-02, D-SIG-03, D-SIG-04, D-SIG-05 · Ley 1010 de 2006 · Resolución 2646 de 2008.</div>
+`
+},
+{
+id:"ambiental", area:"todos", icon:"♻️",
+title:"Módulo 10 · Componente ambiental y manejo de residuos",
+html:`
+<h2>Componente ambiental</h2>
+<p class="sub">Aspectos e impactos ambientales y gestión de residuos</p>
+<p>Un <b>aspecto ambiental</b> es aquello de nuestra actividad que interactúa con el ambiente (generar residuos, consumir agua o energía). Su <b>impacto</b> es el cambio que produce. La empresa los gestiona en la <b>Matriz de Aspectos e Impactos Ambientales</b> para minimizarlos.</p>
+<h3>Clasificación de residuos en Johnvery</h3>
+<table>
+<tr><th>No peligrosos</th><th>Peligrosos</th></tr>
+<tr><td>Reciclables (papel, cartón, vidrio, plástico, metal), Ordinarios/inertes y Biodegradables.</td><td>Químicos (productos vencidos, recipientes contaminados), Biológicos y RAEE (electrónicos, pilas, luminarias).</td></tr>
+</table>
+<h3>Separación en la fuente</h3>
+<p>Deposita cada residuo en el recipiente correcto. Los <b>residuos peligrosos</b> (incluidos los químicos) se disponen en el recipiente <b>rojo</b> y se almacenan en la <b>jaula de residuos peligrosos</b>.</p>
+<div class="alerta"><b>Reduce y reutiliza:</b> usa el papel por ambas caras, prefiere medios digitales y aprovecha cartón y envases cuando sea posible.</div>
+<h3>Ante un derrame de químico líquido</h3>
+<ol>
+  <li>Señaliza y restringe el paso; <b>protege los desagües</b> de inmediato.</li>
+  <li>Usa los <b>EPP</b> necesarios (guantes, protección respiratoria).</li>
+  <li>Recoge con los elementos dispuestos, reenvasa y lleva al almacenamiento temporal.</li>
+  <li>Lava y desinfecta el área. <b>Reporta como accidente/incidente si aplica.</b></li>
+</ol>
+<div class="norma">Documentos: GI-PL-01 Plan de Gestión Integral de Residuos · GI-PR-15-F1 Matriz de Aspectos e Impactos · Decreto 1076 de 2015 · Decreto 4741 de 2005 · Resolución 2184 de 2019 (código de colores).</div>
+`
+},
+{
+id:"emergencias", area:"todos", icon:"🚨",
+title:"Módulo 11 · Plan de emergencias",
+html:`
+<h2>Plan de emergencias</h2>
+<p class="sub">Cómo actuar si ocurre una emergencia</p>
+<h3>Antes: prepárate</h3>
+<ul>
+  <li>Conoce las <b>rutas de evacuación</b>, las salidas de emergencia y la ubicación de <b>extintores</b> y botiquín.</li>
+  <li>Identifica el <b>punto de encuentro</b> de tu sede.</li>
+  <li>Sabe quién es el <b>Coordinador de Emergencias</b> y quiénes son los <b>brigadistas</b>.</li>
+</ul>
+<h3>Durante la evacuación</h3>
+<ul>
+  <li><b>Mantén la calma.</b> Reporta la emergencia por viva voz o avisa a un brigadista.</li>
+  <li><b>Camina, no corras.</b> No te devuelvas por ningún motivo. No grites ni hagas comentarios alarmistas.</li>
+  <li>Sigue las <b>instrucciones de los brigadistas</b> y las rutas de evacuación.</li>
+  <li>Ayuda a quienes no puedan movilizarse por sus propios medios.</li>
+  <li>Dirígete al <b>punto de encuentro</b> y permanece allí hasta recibir instrucciones.</li>
+</ul>
+<h3>Conato de incendio</h3>
+<p>Solo si estás <b>entrenado</b> y es seguro, usa el extintor adecuado según el tipo de fuego. Si no, evacúa y avisa a la brigada. Los extintores están distribuidos en planta, bodegas y oficinas.</p>
+<div class="peligro">Tu prioridad siempre es <b>tu vida y la de los demás</b>, no los bienes materiales.</div>
+<div class="destacado" id="punto-encuentro"><b>Punto de encuentro de tu sede (Sincelejo):</b> confirma con tu líder / brigada el punto de encuentro y las rutas específicas de tu área. <i>(Verifica el plano de evacuación publicado en la sede.)</i></div>
+<div class="norma">Documento: GI-PR-12-PL1 Plan de Emergencia · NFPA 101 · NTC 2885 (extintores portátiles).</div>
+`
+},
+{
+id:"quimicos", area:"prod", icon:"🧪",
+title:"Módulo 12 · Productos químicos y matriz de compatibilidad",
+html:`
+<h2>Productos químicos y compatibilidad</h2>
+<p class="sub">Módulo específico para personal de Producción / Planta</p>
+<p>En planta manipulamos y almacenamos productos químicos. Un almacenamiento incorrecto puede provocar reacciones peligrosas, derrames, incendios o intoxicaciones.</p>
+<h3>Antes de manipular o almacenar un químico</h3>
+<ul>
+  <li>Consulta la <b>Hoja de Seguridad (SDS)</b> del producto, especialmente las <b>secciones 7 (manipulación y almacenamiento) y 10 (estabilidad y reactividad)</b>.</li>
+  <li>Verifica la <b>Tabla / Matriz de Compatibilidad</b> antes de guardar dos productos juntos.</li>
+  <li>Usa siempre los <b>EPP</b> indicados.</li>
+</ul>
+<h3>Regla de compatibilidad</h3>
+<table>
+<tr><th>Situación</th><th>Acción</th></tr>
+<tr><td>Productos <b>compatibles</b></td><td>Se pueden almacenar juntos.</td></tr>
+<tr><td>Casos a revisar</td><td>Consulta las secciones 7 y 10 de la hoja de seguridad.</td></tr>
+<tr><td>Productos <b>incompatibles</b></td><td>Almacenar <b>separados</b>, mediante muros o a distancia.</td></tr>
+</table>
+<p>Categorías que exige diferenciar la matriz: inflamables (líquidos/sólidos), comburentes, corrosivos, tóxicos (agudo/crónico), peróxidos orgánicos, sustancias que reaccionan con el agua o de calentamiento espontáneo, entre otras.</p>
+<div class="peligro">Nunca almacenes juntos productos incompatibles (por ejemplo, un comburente junto a un inflamable). Ante la duda: <b>separa y consulta la matriz y la SDS.</b></div>
+<h3>Residuos químicos</h3>
+<p>Los productos vencidos, devoluciones y recipientes contaminados son <b>residuos peligrosos</b>: van a la <b>jaula de residuos peligrosos</b>, nunca a la basura común ni al desagüe.</p>
+<div class="norma">Documentos: Matriz de compatibilidad química · Listado de productos químicos · Hojas de Seguridad (SDS/SGA) · Decreto 1496 de 2018 (SGA).</div>
+`
+},
+{
+id:"reporte-at", area:"todos", icon:"🩹",
+title:"Módulo 13 · Reporte e investigación de accidentes",
+html:`
+<h2>Reporte e investigación de accidentes e incidentes</h2>
+<p class="sub">Procedimiento P-SIG-11 · aplica a todo el personal</p>
+<p><b>Accidente de trabajo:</b> suceso repentino que, por causa o con ocasión del trabajo, produce una lesión, perturbación, invalidez o muerte. <b>Incidente (casi accidente):</b> evento que pudo causar una lesión pero no la produjo.</p>
+<div class="destacado"><b>Tu obligación:</b> reportar <b>todos</b> los incidentes y accidentes de forma <b>inmediata</b> a tu <b>jefe inmediato</b> y al <b>responsable del SG-SST</b>.</div>
+<h3>¿Qué pasa después de tu reporte?</h3>
+<ul>
+  <li>El responsable del SG-SST reporta a la <b>ARL y EPS</b> (y, cuando aplique, a la Dirección Territorial de Trabajo) dentro de los <b>2 días hábiles</b> siguientes al evento.</li>
+  <li>Se realiza la <b>investigación</b> para identificar las causas.</li>
+  <li>Se definen <b>acciones correctivas o preventivas</b> para que no vuelva a ocurrir.</li>
+  <li>Se socializan las <b>lecciones aprendidas</b>.</li>
+</ul>
+<div class="alerta">Reportar a tiempo protege tu salud y tus derechos (atención médica y prestaciones), y ayuda a evitar que otro compañero sufra lo mismo.</div>
+<div class="norma">Documento: P-SIG-11 Reporte e Investigación de Accidentes e Incidentes de Trabajo · Decreto 1072 de 2015 · Resolución 0312 de 2019.</div>
+`
+}
+];
+
+/* ============================ EVALUACIÓN ============================ */
+const QUESTIONS = [
+{area:"todos", q:"¿Qué tres normas integra el Sistema Integrado de Gestión de Cosméticos Johnvery?",
+ o:["ISO 9001, ISO 14001 e ISO 45001","ISO 9000, ISO 22000 e ISO 27001","Solo ISO 9001 de calidad","ISO 45001 y el Decreto 1072 únicamente"], c:0},
+{area:"todos", q:"La actividad de Cosméticos Johnvery SAS es:",
+ o:["Transporte de pasajeros","Diseño, fabricación y comercialización de productos cosméticos y de cuidado personal","Servicios de salud","Construcción"], c:1},
+{area:"todos", q:"Los valores corporativos de la empresa son:",
+ o:["Rapidez, precio y volumen","Honestidad, Respeto, Compromiso y Solidaridad","Competencia y rentabilidad","Innovación y marketing"], c:1},
+{area:"todos", q:"Ante un peligro o condición insegura en tu puesto de trabajo debes:",
+ o:["Esperar a la próxima reunión para comentarlo","Informarlo oportunamente a tu jefe inmediato y al responsable del SG-SST","Resolverlo solo sin avisar","Ignorarlo si no te afecta directamente"], c:1},
+{area:"todos", q:"En la jerarquía de controles, el orden correcto empieza por:",
+ o:["Usar EPP primero","Eliminación del peligro","Controles administrativos","Señalización"], c:1},
+{area:"todos", q:"Los Elementos de Protección Personal (EPP) son:",
+ o:["La primera y única medida de seguridad","La última línea de defensa, cuando otros controles no bastan","Opcionales si tienes experiencia","Responsabilidad exclusiva del jefe"], c:1},
+{area:"todos", q:"Si sufres o presencias un accidente de trabajo, debes:",
+ o:["Reportarlo de inmediato a tu jefe y al responsable del SG-SST","Esperar 8 días para ver si te recuperas","Reportarlo solo si hay lesión grave","Comentarlo únicamente con un compañero"], c:0},
+{area:"todos", q:"El responsable del SG-SST debe reportar el accidente a la ARL y EPS dentro de:",
+ o:["30 días calendario","2 días hábiles","1 mes","No hay plazo definido"], c:1},
+{area:"todos", q:"El comité encargado de prevenir y atender el acoso laboral es:",
+ o:["El COPASST","El Comité de Convivencia Laboral","La Brigada de Emergencia","El comité de compras"], c:1},
+{area:"todos", q:"Según la política, durante la jornada laboral el consumo de alcohol y sustancias psicoactivas está:",
+ o:["Permitido con moderación","Prohibido","Permitido solo en horario de almuerzo","A criterio del trabajador"], c:1},
+{area:"todos", q:"Los residuos peligrosos (incluidos los químicos) se depositan en el recipiente:",
+ o:["Verde","Blanco","Rojo","Cualquiera disponible"], c:2},
+{area:"todos", q:"Durante una evacuación por emergencia debes:",
+ o:["Correr lo más rápido posible","Caminar sin correr, no devolverte y dirigirte al punto de encuentro","Regresar por tus pertenencias","Esperar dentro del área de trabajo"], c:1},
+{area:"todos", q:"Un residuo peligroso se caracteriza por ser (entre otras):",
+ o:["Corrosivo, reactivo, explosivo, tóxico o inflamable","Únicamente de gran tamaño","Solo el papel y el cartón","Cualquier residuo húmedo"], c:0},
+{area:"prod", q:"Antes de almacenar juntos dos productos químicos debes:",
+ o:["Guardarlos siempre juntos para ahorrar espacio","Verificar la matriz de compatibilidad y las secciones 7 y 10 de la hoja de seguridad","Preguntar solo si huelen fuerte","Almacenarlos por orden alfabético"], c:1},
+{area:"prod", q:"Dos productos químicos incompatibles se deben:",
+ o:["Almacenar juntos con doble bolsa","Almacenar separados, por muros o a distancia","Mezclar previamente","Dejar al aire libre"], c:1},
+{area:"prod", q:"Los productos vencidos y recipientes contaminados con químicos se disponen en:",
+ o:["La basura común","El desagüe","La jaula de residuos peligrosos","El punto ecológico de reciclaje"], c:2}
+];
+
+const UMBRAL = 0.8; // 80%
+
+/* ============================ ESTADO Y LÓGICA ============================ */
+const state = { nombre:"", cedula:"", cargo:"", area:"", tipo:"", mods:[], idx:0, viewed:{}, answers:{}, score:0, passed:false };
+const $ = s => document.querySelector(s);
+const scr = id => $("#scr-"+id);
+function show(id){ ["welcome","index","module","eval","result","cert"].forEach(s=>scr(s).classList.add("oculto")); scr(id).classList.remove("oculto"); window.scrollTo(0,0); }
+
+function activeModules(){ return MODULES.filter(m => m.area==="todos" || (m.area==="prod" && state.area==="Produccion")); }
+function activeQuestions(){ return QUESTIONS.filter(q => q.area==="todos" || (q.area==="prod" && state.area==="Produccion")); }
+
+function updateBar(){
+  const total = activeModules().length;
+  const done = Object.keys(state.viewed).length;
+  const pct = total? Math.round(done/total*100):0;
+  $("#barraFill").style.width = pct+"%";
+  $("#barraPct").textContent = pct+"%";
+  $("#barraTxt").textContent = "Módulos revisados: "+done+" de "+total;
+}
+
+/* --- Inicio --- */
+$("#btnStart").onclick = () => {
+  const n=$("#f-nombre").value.trim(), c=$("#f-cedula").value.trim(), cg=$("#f-cargo").value.trim(), a=$("#f-area").value, t=$("#f-tipo").value;
+  if(!n||!c||!cg||!a){ alert("Por favor completa todos los campos obligatorios (*)."); return; }
+  state.nombre=n; state.cedula=c; state.cargo=cg; state.area=a; state.tipo=t;
+  state.mods = activeModules();
+  $("#barraWrap").style.display="block";
+  $("#headUser").innerHTML = n+"<br>"+(a==="Produccion"?"Producción / Planta":a)+" · "+t;
+  buildIndex();
+  updateBar();
+  show("index");
+};
+
+/* --- Índice --- */
+function buildIndex(){
+  const list = $("#idxList"); list.innerHTML="";
+  state.mods.forEach((m,i)=>{
+    const done = !!state.viewed[m.id];
+    const el = document.createElement("div");
+    el.className = "idx-item"+(done?" done":"");
+    el.innerHTML = `<div class="idx-num">${done?"✓":(i+1)}</div><div class="idx-t">${m.icon} ${m.title}</div><div class="idx-check">${done?"Leído":""}</div>`;
+    el.onclick = ()=>{ state.idx=i; renderModule(); show("module"); };
+    list.appendChild(el);
+  });
+  const all = state.mods.every(m=>state.viewed[m.id]);
+  $("#btnGoEval").disabled = !all;
+  $("#btnGoEval").textContent = all? "Ir a la evaluación →" : "Revisa todos los módulos para continuar";
+}
+
+/* --- Módulo --- */
+function renderModule(){
+  const m = state.mods[state.idx];
+  $("#moduleBody").innerHTML = m.html;
+  $("#btnPrev").style.visibility = state.idx===0? "hidden":"visible";
+  const last = state.idx===state.mods.length-1;
+  $("#btnNext").textContent = last? "Marcar leído y ver índice →":"Marcar leído y continuar →";
+}
+$("#btnPrev").onclick = ()=>{ if(state.idx>0){ state.idx--; renderModule(); window.scrollTo(0,0);} };
+$("#btnNext").onclick = ()=>{
+  const m = state.mods[state.idx];
+  state.viewed[m.id]=true; updateBar();
+  if(state.idx < state.mods.length-1){ state.idx++; renderModule(); window.scrollTo(0,0); }
+  else { buildIndex(); show("index"); }
+};
+$("#btnGoEval").onclick = ()=>{ buildEval(); show("eval"); };
+
+/* --- Evaluación --- */
+$("#evalUmbral").textContent = Math.round(UMBRAL*100)+"%";
+function buildEval(){
+  const qs = activeQuestions();
+  const body = $("#evalBody"); body.innerHTML="";
+  qs.forEach((q,i)=>{
+    const div = document.createElement("div"); div.className="preg"; div.dataset.qi=i;
+    let opts = q.o.map((op,j)=>`<label class="opt" data-oi="${j}"><input type="radio" name="q${i}" value="${j}">${op}</label>`).join("");
+    div.innerHTML = `<div class="preg-q">${i+1}. ${q.q}</div>${opts}<div class="feed oculto"></div>`;
+    body.appendChild(div);
+  });
+  body.querySelectorAll(".opt").forEach(o=>o.onclick=function(){
+    const p=this.closest(".preg"); p.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));
+    this.classList.add("sel"); this.querySelector("input").checked=true;
+  });
+}
+$("#btnBackIdx").onclick = ()=>{ buildIndex(); show("index"); };
+$("#btnGrade").onclick = ()=>{
+  const qs = activeQuestions();
+  let correct=0, unanswered=0;
+  qs.forEach((q,i)=>{
+    const sel = $("#evalBody").querySelector(`input[name="q${i}"]:checked`);
+    if(!sel){ unanswered++; }
+  });
+  if(unanswered>0){ alert("Te faltan "+unanswered+" pregunta(s) por responder."); return; }
+  qs.forEach((q,i)=>{
+    const preg = $("#evalBody").querySelector(`.preg[data-qi="${i}"]`);
+    const sel = parseInt(preg.querySelector(`input[name="q${i}"]:checked`).value);
+    const feed = preg.querySelector(".feed");
+    preg.querySelectorAll(".opt").forEach(o=>{
+      const oi=parseInt(o.dataset.oi); o.classList.remove("sel");
+      if(oi===q.c) o.classList.add("ok");
+      if(oi===sel && sel!==q.c) o.classList.add("bad");
+      o.querySelector("input").disabled=true;
+    });
+    if(sel===q.c){ correct++; feed.className="feed ok"; feed.textContent="✓ Correcto"; }
+    else { feed.className="feed bad"; feed.textContent="✗ Respuesta correcta: "+q.o[q.c]; }
+  });
+  state.score = correct/qs.length;
+  state.passed = state.score>=UMBRAL;
+  showResult(correct, qs.length);
+};
+
+/* --- Resultado --- */
+function showResult(correct,total){
+  const pct = Math.round(state.score*100);
+  $("#resNum").textContent = pct+"%";
+  $("#resNum").className = "res-num "+(state.passed?"pass":"fail");
+  $("#resBadge").className = "badge "+(state.passed?"pass":"fail");
+  $("#resBadge").textContent = state.passed? "APROBADO":"NO APROBADO";
+  $("#resMsg").innerHTML = state.passed
+    ? `Respondiste correctamente <b>${correct} de ${total}</b>. ¡Felicitaciones! Ya puedes generar tu constancia.`
+    : `Respondiste correctamente <b>${correct} de ${total}</b>. Necesitas al menos ${Math.ceil(total*UMBRAL)} correctas (${Math.round(UMBRAL*100)}%). Repasa los módulos y repite la evaluación.`;
+  $("#btnCert").style.display = state.passed? "inline-block":"none";
+  $("#btnRetry").style.display = state.passed? "none":"inline-block";
+  show("result");
+}
+$("#btnRetry").onclick = ()=>{ buildEval(); show("eval"); };
+$("#btnCert").onclick = ()=>{ buildCert(); show("cert"); };
+
+/* --- Constancia --- */
+function folio(){
+  const d=new Date();
+  const base = (state.cedula.replace(/\D/g,"").slice(-4)||"0000");
+  return "CJ-SIG-"+d.getFullYear()+(""+(d.getMonth()+1)).padStart(2,"0")+(""+d.getDate()).padStart(2,"0")+"-"+base;
+}
+function fechaLarga(d){
+  const meses=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  return d.getDate()+" de "+meses[d.getMonth()]+" de "+d.getFullYear();
+}
+function buildCert(){
+  const d=new Date();
+  $("#certName").textContent = state.nombre;
+  $("#certCedula").textContent = state.cedula;
+  $("#certTipo").textContent = state.tipo;
+  $("#certCargo").textContent = state.cargo;
+  $("#certArea").textContent = state.area==="Produccion"?"Producción / Planta":state.area;
+  $("#certMods").textContent = state.mods.length+" módulos";
+  $("#certScore").textContent = Math.round(state.score*100)+"% (APROBADO)";
+  $("#certFecha").textContent = fechaLarga(d);
+  $("#certFirmaTrab").innerHTML = state.nombre+"<br>C.C. "+state.cedula;
+  $("#certFolio").textContent = folio();
+  $("#certGen").textContent = d.toLocaleString("es-CO");
+}
+$("#btnBackResult").onclick = ()=> show("result");
+$("#btnPrint").onclick = ()=> window.print();
+$("#btnDownload").onclick = ()=>{
+  const d=new Date();
+  const html = "<!DOCTYPE html><html lang='es'><head><meta charset='UTF-8'><title>Constancia SIG - "+state.nombre+"</title>"+
+    "<style>body{font-family:Arial,sans-serif;color:#3d4a45;max-width:700px;margin:30px auto;padding:20px}"+
+    ".const{border:3px solid #7ab51d;border-radius:14px;padding:34px}.c-logo{width:60px;height:60px;border-radius:14px;background:#7ab51d;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:23px;margin:0 auto 10px}"+
+    "h2{text-align:center;color:#5f9016}.c-emp{text-align:center;font-weight:700;letter-spacing:1px}.c-body{margin:22px 0;text-align:center;line-height:1.9}"+
+    ".c-name{font-size:24px;font-weight:800}.c-data{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin:20px auto;max-width:520px;font-size:14px}"+
+    ".c-data div{border-bottom:1px solid #e2e8e0;padding:6px 0}.c-data b{color:#5f9016;display:block;font-size:12px;text-transform:uppercase}"+
+    ".c-firma{margin-top:34px;display:flex;justify-content:space-around;gap:30px}.c-firma div{text-align:center;border-top:1.5px solid #3d4a45;padding-top:6px;min-width:210px;font-size:13px}"+
+    ".c-folio{text-align:center;font-size:12px;color:#6b7770;margin-top:24px}</style></head><body>"+
+    document.getElementById("certBox").outerHTML+"</body></html>";
+  const blob = new Blob([html],{type:"text/html;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download = "Constancia_SIG_"+state.nombre.replace(/\s+/g,"_")+"_"+d.getFullYear()+(""+(d.getMonth()+1)).padStart(2,"0")+(""+d.getDate()).padStart(2,"0")+".html";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+</script>
+</body>
+</html>
